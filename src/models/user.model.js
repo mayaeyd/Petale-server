@@ -75,19 +75,22 @@ const userSchema = new mongoose.Schema(
               },
             },
             wateringSchedule: {
-              frequency: {
-                type: String,
-                enum: ["daily", "weekly"],
-                default: "weekly",
-              },
-              nextWateringTime: {
-                type: Date,
-                default: Date.now,
-              },
-              isAutomatedWatering: {
-                type: Boolean,
-                default: false,
-              },
+              type:{
+                frequency: {
+                  type: String,
+                  enum: ["daily", "weekly"],
+                  default: "weekly",
+                },
+                nextWateringTime: {
+                  type: Date,
+                  default: Date.now,
+                },
+                isAutomatedWatering: {
+                  type: Boolean,
+                  default: false,
+                },
+                default: {},
+              }
             },
           },
         ],
