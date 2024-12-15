@@ -24,7 +24,6 @@ export const getPlants = async (req, res) => {
     return res
       .status(200)
       .send({ success: true, plants: user.gardenerProfile.garden.plants });
-
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: "Server error" });
@@ -73,15 +72,42 @@ export const addPlant = async (req, res) => {
   }
 };
 
-export const editPlant = async (req, res) =>{
-    const { plantType, scientificName, plantedDate } = req.body;
-    const { id } = req.user; 
+export const editPlant = async (req, res) => {
+  const { plantType, scientificName, plantedDate } = req.body;
+  const userId = req.user._id;
+  const plantId = req.params.id;
 
-    if(!id){
-        return res.status(400).send({message:"User ID is required"})
-    }
+  if (!userId) {
+    return res.status(400).send({ message: "User ID is required" });
+  }
 
-    if (!plantType || !scientificName) {
-        return res.status(400).send({ message: "All fields are required" });
+  if (!plantId) {
+    return res.status(400).send({ message: "Plant ID is required" });
+  }
+
+  if (!plantType || !scientificName) {
+    return res.status(400).send({ message: "All fields are required" });
+  }
+
+  try {
+    // Find and update the plant by its id
+    const user = await User.findOneAndUpdate(
+      { _id: userId, "gardenerProfile.garden.plants._id": plantId },
+      {
+        $set: {
+          "gardenerProfile.garden.plants.$.plantType": plantType,
+          "gardenerProfile.garden.plants.$.scientificName": scientificName,
+          "gardenerProfile.garden.plants.$.plantedDate": plantedDate,
+        },
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).send({ message: "User or plant not found" });
     }
-}
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ message: "Server error" });
+  }
+};
