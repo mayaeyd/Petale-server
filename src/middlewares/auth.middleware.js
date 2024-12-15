@@ -28,7 +28,6 @@ export const authMiddleware = async (req, res, next) => {
 
     req.user = user;
 
-    console.log("Auth middleware passed ", token);
     next();
   } catch (error) {
     return res.status(401).send({
