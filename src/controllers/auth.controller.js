@@ -67,7 +67,7 @@ export const register = async (req, res) => {
   }
 
   const userEmail = await User.findOne({ email });
-  const phoneNum = await User.findOne({phoneNumber});
+  const phoneNum = await User.findOne({ phoneNumber });
 
   if (userEmail) {
     return res.status(400).send({
@@ -98,11 +98,9 @@ export const register = async (req, res) => {
 
   if (role === "gardener") {
     if (!gardenName || !gardenLocation) {
-      return res
-        .status(400)
-        .json({
-          message: "Gardener profile requires garden name and location",
-        });
+      return res.status(400).json({
+        message: "Gardener profile requires garden name and location",
+      });
     }
 
     userData.gardenerProfile = {
@@ -126,18 +124,48 @@ export const register = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const id = req.user.id;
-    const { firstName, lastName, email, password, phoneNumber, gardenName } = req.body;
+    const { id } = req.params;
+    console.log(id);
 
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        username,
-        email,
-        password,
-      },
-      { new: true }
-    );
+    const {
+      firstName,
+      lastName,
+      password,
+      phoneNumber,
+      gardenName,
+      gardenLocation,
+    } = req.body;
+
+    const phoneNum = await User.findOne({ phoneNumber });
+
+    if (phoneNum) {
+      return res.status(400).send({
+        message: "Phone number already in use",
+      });
+    }
+
+    const updateData = {};
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.hashedPassword = hashedPassword;
+    }
+
+    if (gardenName || gardenLocation) {
+      updateData.gardenerProfile = {
+        ...updateData.gardenerProfile,
+        garden: {
+          ...(gardenName && { name: gardenName }),
+          ...(gardenLocation && { location: gardenLocation }),
+        },
+      };
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
 
     if (!updatedUser) {
       return res.status(404).send({ message: "User not found" });
