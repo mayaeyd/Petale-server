@@ -120,3 +120,23 @@ export const editPlant = async (req, res) => {
     return res.status(500).send({ message: "Server error" });
   }
 };
+
+export const deletePlant = async (req, res) => {
+  const userId = req.user._id;
+  const plantId = req.params.id;
+
+  if (!userId) {
+    return res.status(400).send({ message: "User ID is required" });
+  }
+
+  if (!plantId) {
+    return res.status(400).send({ message: "Plant ID is required" });
+  }
+
+  try{
+
+  }catch(error){
+    console.error(error);
+    return res.status(500).send({ message: "Server error" });
+  }
+};
