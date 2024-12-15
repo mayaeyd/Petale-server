@@ -14,10 +14,21 @@ export const getPlants = async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
 
+    if (plantId) {
+      const plant = user.gardenerProfile.garden.plants.find(
+        (plant) => plant._id === plantId
+      );
+      return res.status(200).send({ success: true, plant });
+    }
+
     return res
       .status(200)
       .send({ success: true, plants: user.gardenerProfile.garden.plants });
-  } catch (error) {}
+
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).send({ message: "Server error" });
+  }
 };
 
 export const addPlant = async (req, res) => {
