@@ -3,5 +3,5 @@ import { banUser, getUsers } from "../controllers/users.controller";
 
 const router = new Router();
 
-router.get("/:id?",getUsers);
-router.post("/:id",banUser);
+router.get("/:id?", adminMiddleware, getUsers);
+router.post("/:id", adminMiddleware, banUser);
