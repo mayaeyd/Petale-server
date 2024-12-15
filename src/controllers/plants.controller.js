@@ -6,7 +6,7 @@ export const getPlants = async (req, res) => {
     const userId = req.user._id;
 
     if (!userId) {
-      return res.status(400).send({ message: "User Id is required" });
+      return res.status(400).send({ message: "User ID is required" });
     }
 
     const user = await User.findById(userId);
@@ -72,3 +72,16 @@ export const addPlant = async (req, res) => {
     return res.status(500).send({ message: "Server error" });
   }
 };
+
+export const editPlant = async (req, res) =>{
+    const { plantType, scientificName, plantedDate } = req.body;
+    const { id } = req.user; 
+
+    if(!id){
+        return res.status(400).send({message:"User ID is required"})
+    }
+
+    if (!plantType || !scientificName) {
+        return res.status(400).send({ message: "All fields are required" });
+    }
+}
