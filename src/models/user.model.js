@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema(
       unique: true,
       match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     },
+    phoneNumber: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
@@ -120,7 +125,7 @@ const userSchema = new mongoose.Schema(
           },
         },
       ],
-      default: null,
+      default: {},
     },
 
     purchaseHistory: [
