@@ -21,7 +21,17 @@ export const addPlant = async (req, res) => {
       },
     };
 
-    
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        $push: { "gardenerProfile.garden.plants": newPlant },
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
     return res.status(200).send({
       message: "Plant added successfully",
       garden: updatedUser.gardenerProfile.garden,
