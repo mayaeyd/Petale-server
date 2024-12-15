@@ -14,6 +14,6 @@ router.post("/login", login);
 router.post("/register", register);
 router.put("/updateProfile/:id", authMiddleware, updateProfile);
 router.post("/login/admin", adminLogin);
-router.post("/getSelf", getSelf);
+router.post("/getSelf", authMiddleware, getSelf);
 
 export default router;
