@@ -106,6 +106,15 @@ export const editPlant = async (req, res) => {
     if (!user) {
       return res.status(404).send({ message: "User or plant not found" });
     }
+
+    const updatedPlant = user.gardenerProfile.garden.plants.find(
+      (plant) => plant._id.toString() === plantId
+    );
+
+    return res.status(200).send({
+      message: "Plant updated successfully",
+      updatedPlant,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server error" });
