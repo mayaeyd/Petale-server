@@ -67,10 +67,17 @@ export const register = async (req, res) => {
   }
 
   const userEmail = await User.findOne({ email });
+  const phoneNum = await User.findOne({phoneNumber});
 
   if (userEmail) {
     return res.status(400).send({
       message: "Email already in use",
+    });
+  }
+
+  if (phoneNum) {
+    return res.status(400).send({
+      message: "Phone number already in use",
     });
   }
 
