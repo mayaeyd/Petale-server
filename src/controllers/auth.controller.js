@@ -224,3 +224,32 @@ export const adminLogin = async (req,res)=>{
     });
   }
 }
+
+export const getSelf = async (req,res)=>{
+  try{
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).send({ message: "Token is required" });
+    }
+
+    const payload = jwt.verify(token, process.env.SECRET_KEY);
+
+    if (!payload) {
+      return res.status(403).send({ message: "Invalid or expired token" });
+    }
+
+    const user = await User.findById(payload.userId).select("-password");
+
+    console.log(user);
+    
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    return res.status(200).send({ user });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ message: "Something went wrong" });
+  }
+}
