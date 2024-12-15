@@ -85,3 +85,31 @@ export const register = async (req, res) => {
     });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const { username, email, password } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        username,
+        email,
+        password,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .send({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server error" });
+  }
+};
