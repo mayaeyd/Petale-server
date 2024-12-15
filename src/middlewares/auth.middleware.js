@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/users.model.js';
+import jwt from "jsonwebtoken";
+import User from "../models/users.model.js";
 
 export const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -19,4 +19,20 @@ export const authMiddleware = async (req, res, next) => {
   }
 
   const token = splitted[1];
+
+  try {
+    const payload = await jwt.verify(token, process.env.SECRET_KEY);
+
+    const id = payload.userId;
+    const user = await User.findById(id);
+
+    req.user = user;
+
+    console.log("Auth middleware passed ", token);
+    next();
+  } catch (error) {
+    return res.status(401).send({
+      message: "Unauthorized",
+    });
+  }
 };
