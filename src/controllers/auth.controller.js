@@ -4,15 +4,15 @@ import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
+    if (!email || !password) {
       return res.status(400).send({
         message: "All fields are required",
       });
     }
 
-    const user = await User.findOne({ username }).select("+password");
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return res.status(404).send({
@@ -42,54 +42,85 @@ export const login = async (req, res) => {
 };
 
 export const register = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+    phoneNumber,
+    role, // 'user' or 'gardener'
+    gardenName, // Only for gardener
+    gardenLocation,
+  } = req.body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !password ||
+    !confirmPassword ||
+    !phoneNumber ||
+    !role
+  ) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const userEmail = await User.findOne({ email });
+
+  if (userEmail) {
+    return res.status(400).send({
+      message: "Email already in use",
+    });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match" });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const userData = {
+    firstName,
+    lastName,
+    email,
+    password: hashedPassword,
+    phoneNumber,
+    role,
+  };
+
+  if (role === "gardener") {
+    if (!gardenName || !gardenLocation) {
+      return res
+        .status(400)
+        .json({
+          message: "Gardener profile requires garden name and location",
+        });
+    }
+
+    userData.gardenerProfile = {
+      garden: {
+        name: gardenName,
+        location: gardenLocation,
+      },
+      marketplaceListings: [],
+    };
+  }
+
   try {
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
-      return res.status(400).send({
-        message: "Credentials are required",
-      });
-    }
-
-    const userEmail = await User.findOne({ email });
-    const userName = await User.findOne({ username });
-
-    if (userEmail) {
-      return res.status(400).send({
-        message: "Email already in use",
-      });
-    }
-    if (userName) {
-      return res.status(400).send({
-        message: "Username already taken",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword, password);
-
-    const user = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-    });
-
-    return res.status(201).send({
-      message: "User created successfully",
-      user,
-    });
+    const newUser = await User.create(userData);
+    res
+      .status(201)
+      .json({ message: "User created successfully", user: newUser });
   } catch (error) {
-    console.log(error.message);
-
-    return res.status(500).send({
-      message: "Server error",
-    });
+    res.status(500).json({ message: "Error creating user", error });
   }
 };
 
 export const updateProfile = async (req, res) => {
   try {
     const id = req.user.id;
-    const { username, email, password } = req.body;
+    const { firstName, lastName, email, password, phoneNumber, gardenName } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
