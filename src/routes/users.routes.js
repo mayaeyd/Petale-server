@@ -5,7 +5,7 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = new Router();
 
-router.get("/:id?", authMiddleware,adminMiddleware, getUsers);
-router.post("/:id", adminMiddleware, banUser);
+router.get("/:id?", authMiddleware, adminMiddleware, getUsers);
+router.post("/:id", authMiddleware, adminMiddleware, banUser);
 
 export default router;
