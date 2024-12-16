@@ -134,7 +134,7 @@ export const deletePlant = async (req, res) => {
   }
 
   try {
-    const user = await User.updateOne(
+    const user = await User.findByIdAndUpdate(
       { _id: userId },
       {
         $pull: {
@@ -143,12 +143,17 @@ export const deletePlant = async (req, res) => {
       }
     );
 
-    if(!user){
-        return res.status(404).send({message:"User or plant not found"});
+    if (!user) {
+      return res.status(404).send({ message: "User or plant not found" });
     }
 
-    return res.status(200).send({message:"Plant deleted successfully"})
-    
+    const deletedPlant = user.gardenerProfile.garden.plants.find(
+      (plant) => plant._id.toString() === plantId
+    );
+
+    return res
+      .status(200)
+      .send({ message: "Plant deleted successfully", deletedPlant });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server error" });
