@@ -133,9 +133,16 @@ export const deletePlant = async (req, res) => {
     return res.status(400).send({ message: "Plant ID is required" });
   }
 
-  try{
-
-  }catch(error){
+  try {
+    const user = await User.updateOne(
+      { _id: userId },
+      {
+        $pull: {
+          "gardenerProfile.garden.plants": { _id: plantId },
+        },
+      }
+    );
+  } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server error" });
   }
