@@ -142,6 +142,13 @@ export const deletePlant = async (req, res) => {
         },
       }
     );
+
+    if(!user){
+        return res.status(404).send({message:"User or plant not found"});
+    }
+
+    return res.status(200).send({message:"Plant deleted successfully"})
+    
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server error" });
