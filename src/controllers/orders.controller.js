@@ -12,6 +12,13 @@ export const getOrders = async (req, res) => {
   if (!user) {
     return res.status(404).send({ message: "User not found" });
   }
+
+  if (orderId) {
+    const order = user.purchaseHistory.find(
+      (order) => order.listingId === orderId
+    );
+    return res.status(200).send({ success: true, order });
+  }
 };
 
 export const createOrder = async (req, res) => {};
