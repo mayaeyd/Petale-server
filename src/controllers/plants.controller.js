@@ -163,5 +163,11 @@ export const deletePlant = async (req, res) => {
 
 //post plant for sale
 export const postPlant = async (req, res) => {
-  
+  const plantId = req.params.id;
+  try{
+
+  }catch(error){
+    console.error(error);
+    return res.status(500).send({ message: "Server error" });
+  }
 };
