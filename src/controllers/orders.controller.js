@@ -19,6 +19,8 @@ export const getOrders = async (req, res) => {
     );
     return res.status(200).send({ success: true, order });
   }
+
+  return res.status(200).send({ success: true, orders: user.purchaseHistory });
 };
 
 export const createOrder = async (req, res) => {};
