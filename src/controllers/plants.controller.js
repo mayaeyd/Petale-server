@@ -162,4 +162,6 @@ export const deletePlant = async (req, res) => {
 };
 
 //post plant for sale
-export const postPlant = async (req, res) => {};
+export const postPlant = async (req, res) => {
+  
+};
