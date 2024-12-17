@@ -30,6 +30,7 @@ export const getPlants = async (req, res) => {
   }
 };
 
+//add unharvested plant
 export const addPlant = async (req, res) => {
   try {
     const { plantType, scientificName, plantedDate } = req.body;
@@ -159,3 +160,6 @@ export const deletePlant = async (req, res) => {
     return res.status(500).send({ message: "Server error" });
   }
 };
+
+//post plant for sale
+export const postPlant = async (req, res) => {};
