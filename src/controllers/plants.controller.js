@@ -195,7 +195,7 @@ export const postPlant = async (req, res) => {
           fileName: `${plantName}-${Date.now()}`,
         });
         uploadedImages.push(uploadResponse.url);
-      } catch {
+      } catch (error) {
         console.error("Image upload failed:", error);
         return res.status(500).send({ message: "Image upload failed" });
       }
@@ -218,6 +218,7 @@ export const postPlant = async (req, res) => {
     };
 
     user.gardenerProfile.marketplaceListings.push(postPlant);
+    await user.save();
 
     res.status(201).send({ message: "Plant successfully posted", postPlant });
   } catch (error) {
