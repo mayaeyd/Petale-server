@@ -75,7 +75,7 @@ const userSchema = new mongoose.Schema(
               },
             },
             wateringSchedule: {
-              type:{
+              type: {
                 frequency: {
                   type: String,
                   enum: ["daily", "weekly"],
@@ -90,7 +90,7 @@ const userSchema = new mongoose.Schema(
                   default: false,
                 },
                 default: {},
-              }
+              },
             },
           },
         ],
@@ -149,6 +149,10 @@ const userSchema = new mongoose.Schema(
         sellerGardenerId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
+          required: true,
+        },
+        buyerAddress: {
+          type: String,
           required: true,
         },
       },
