@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import imagekit from "../utils/imagekit.js";
 
 export const getPlants = async (req, res) => {
   try {
@@ -165,6 +166,7 @@ export const deletePlant = async (req, res) => {
 export const postPlant = async (req, res) => {
   const plantId = req.params.id;
   const userId = req.user._id;
+  const uploadedImages = [];
 
   try {
     const user = await User.findById(userId);
@@ -173,8 +175,16 @@ export const postPlant = async (req, res) => {
     }
 
     const {plantName, harvestDate, price, description, quantity, images} = req.body;
-    if(!plantName || !harvestDate || !price || !description || !quantity || !images){
+    if(!plantName || !harvestDate || !price || !description || !quantity || !images || images.length === 0){
       return res.status(400).send({message:"All fields are required"});
+    }
+
+    for (const image of images) {
+      const uploadResponse = await imagekit.upload({
+        file: image,
+        fileName: `${plantName}-${Date.now()}`,
+      });
+      uploadedImages.push(uploadResponse.url);
     }
 
     const plant = user.gardenerProfile.garden.plants.find(
