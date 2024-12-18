@@ -20,8 +20,6 @@ export const login = async (req, res) => {
       });
     }
 
-    console.log(password, user.password);
-
     const check = await bcrypt.compare(password, user.password);
 
     if (!check) {
@@ -125,7 +123,6 @@ export const register = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
 
     const {
       firstName,
@@ -180,11 +177,11 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-export const adminLogin = async (req,res)=>{
+export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if(!email || !password){
+    if (!email || !password) {
       return res.status(400).send({
         message: "All fields are required",
       });
@@ -198,14 +195,12 @@ export const adminLogin = async (req,res)=>{
       });
     }
 
-    if(user.role !=='admin'){
+    if (user.role !== "admin") {
       return res.status(401).send({
         message: "Unauthorized",
       });
     }
 
-    console.log(password , user.password);
-    
     const check = await bcrypt.compare(password, user.password);
 
     if (!check) {
@@ -216,17 +211,17 @@ export const adminLogin = async (req,res)=>{
 
     const token = await jwt.sign({ userId: user.id }, process.env.SECRET_KEY);
 
-    return res.status(200).send({user, token});
+    return res.status(200).send({ user, token });
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({
       message: "Something went wrong",
     });
   }
-}
+};
 
-export const getSelf = async (req,res)=>{
-  try{
+export const getSelf = async (req, res) => {
+  try {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -241,8 +236,6 @@ export const getSelf = async (req,res)=>{
 
     const user = await User.findById(payload.userId).select("-password");
 
-    console.log(user);
-    
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
@@ -252,4 +245,4 @@ export const getSelf = async (req,res)=>{
     console.error(error);
     return res.status(500).send({ message: "Something went wrong" });
   }
-}
+};
