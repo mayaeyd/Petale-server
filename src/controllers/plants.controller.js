@@ -186,24 +186,24 @@ export const postPlant = async (req, res) => {
       return res.status(400).send({ message: "All fields are required" });
     }
 
+    const plant = user.gardenerProfile.garden.plants.find(
+      (plant) => plant._id.toString() === plantId
+    );
+    if (!plant) {
+      return res.status(404).send({ message: "Plant not found" });
+    }
+
     for (const image of images) {
       try {
         const uploadResponse = await imagekit.upload({
           file: image,
-          fileName: `${plantName}-${Date.now()}`,
+          fileName: `${plantName || plant.scientificName}-${Date.now()}`,
         });
         uploadedImages.push(uploadResponse.url);
       } catch (error) {
         console.error("Image upload failed:", error);
         return res.status(500).send({ message: "Image upload failed" });
       }
-    }
-
-    const plant = user.gardenerProfile.garden.plants.find(
-      (plant) => plant._id.toString() === plantId
-    );
-    if (!plant) {
-      return res.status(404).send({ message: "Plant not found" });
     }
 
     const postPlant = {
