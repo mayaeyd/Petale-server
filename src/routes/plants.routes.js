@@ -6,12 +6,14 @@ import {
   getPlants,
   editPlant,
   deletePlant,
+  postPlant,
 } from "../controllers/plants.controller.js";
 
 const router = new Router();
 
 router.get("/:id?", authMiddleware, gardenerMiddleware, getPlants);
 router.post("/", authMiddleware, gardenerMiddleware, addPlant);
+router.post(":id", authMiddleware, gardenerMiddleware, postPlant);
 router.put("/:id", authMiddleware, gardenerMiddleware, editPlant);
 router.delete("/:id", authMiddleware, gardenerMiddleware, deletePlant);
 
