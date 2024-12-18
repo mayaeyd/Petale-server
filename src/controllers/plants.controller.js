@@ -174,17 +174,31 @@ export const postPlant = async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    const {plantName, harvestDate, price, description, quantity, images} = req.body;
-    if(!plantName || !harvestDate || !price || !description || !quantity || !images || images.length === 0){
-      return res.status(400).send({message:"All fields are required"});
+    const { plantName, harvestDate, price, description, quantity, images } =
+      req.body;
+    if (
+      !plantName ||
+      !harvestDate ||
+      !price ||
+      !description ||
+      !quantity ||
+      !images ||
+      images.length === 0
+    ) {
+      return res.status(400).send({ message: "All fields are required" });
     }
 
     for (const image of images) {
-      const uploadResponse = await imagekit.upload({
-        file: image,
-        fileName: `${plantName}-${Date.now()}`,
-      });
-      uploadedImages.push(uploadResponse.url);
+      try {
+        const uploadResponse = await imagekit.upload({
+          file: image,
+          fileName: `${plantName}-${Date.now()}`,
+        });
+        uploadedImages.push(uploadResponse.url);
+      } catch {
+        console.error("Image upload failed:", error);
+        return res.status(500).send({ message: "Image upload failed" });
+      }
     }
 
     const plant = user.gardenerProfile.garden.plants.find(
@@ -195,17 +209,17 @@ export const postPlant = async (req, res) => {
     }
 
     const postPlant = {
-      plantName : plantName || plant.scientificName,
-      harvestDate : harvestDate || Date.now(),
+      plantName: plantName || plant.scientificName,
+      harvestDate: harvestDate || Date.now(),
       price,
       description,
       quantity,
-      images: uploadedImages
-    } 
+      images: uploadedImages,
+    };
 
     user.gardenerProfile.marketplaceListings.push(postPlant);
-    
-    res.status(201).send({message: "Plant successfully posted",postPlant})
+
+    res.status(201).send({ message: "Plant successfully posted", postPlant });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server error" });
