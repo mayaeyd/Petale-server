@@ -8,12 +8,13 @@ import {
   deletePlant,
   postPlant,
 } from "../controllers/plants.controller.js";
+import upload from "../utils/multerConfig.js";
 
 const router = new Router();
 
 router.get("/:id?", authMiddleware, gardenerMiddleware, getPlants);
 router.post("/", authMiddleware, gardenerMiddleware, addPlant);
-router.post("/:id", authMiddleware, gardenerMiddleware, postPlant);
+router.post("/:id", authMiddleware, gardenerMiddleware, upload, postPlant);
 router.put("/:id", authMiddleware, gardenerMiddleware, editPlant);
 router.delete("/:id", authMiddleware, gardenerMiddleware, deletePlant);
 
