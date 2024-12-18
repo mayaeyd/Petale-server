@@ -165,12 +165,20 @@ export const deletePlant = async (req, res) => {
 export const postPlant = async (req, res) => {
   const plantId = req.params.id;
   const userId = req.user._id;
+
+  const {plantName, harvestDate, price, description, quantity, images} = req.body;
+
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }
-    
+    const plant = user.gardenerProfile.garden.plants.find(
+      (plant) => plant._id.toString() === plantId
+    );
+    if (!plant) {
+      return res.status(404).send({ message: "Plant not found" });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server error" });
