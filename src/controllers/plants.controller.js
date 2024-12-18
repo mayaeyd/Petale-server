@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import imagekit from "../utils/imagekit.js";
+import multer from "multer";
 
 export const getPlants = async (req, res) => {
   try {
