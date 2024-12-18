@@ -175,15 +175,10 @@ export const postPlant = async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    const { plantName, harvestDate, price, description, quantity, images } =
-      req.body;
-    if (
-      !price ||
-      !description ||
-      !quantity ||
-      !images ||
-      images.length === 0
-    ) {
+    const { plantName, harvestDate, price, description, quantity } = req.body;
+    const images = req.files; // Image files from Multer
+
+    if (!price || !description || !quantity || !images || images.length === 0) {
       return res.status(400).send({ message: "All fields are required" });
     }
 
@@ -197,7 +192,7 @@ export const postPlant = async (req, res) => {
     for (const image of images) {
       try {
         const uploadResponse = await imagekit.upload({
-          file: image,
+          file: image.buffer,
           fileName: `${plantName || plant.scientificName}-${Date.now()}`,
         });
         uploadedImages.push(uploadResponse.url);
