@@ -177,8 +177,6 @@ export const postPlant = async (req, res) => {
     const { plantName, harvestDate, price, description, quantity, images } =
       req.body;
     if (
-      !plantName ||
-      !harvestDate ||
       !price ||
       !description ||
       !quantity ||
