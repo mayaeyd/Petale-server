@@ -32,7 +32,7 @@ export const getPlants = async (req, res) => {
   }
 };
 
-//add unharvested plant
+// Add unharvested plant
 export const addPlant = async (req, res) => {
   try {
     const { plantType, scientificName, plantedDate } = req.body;
@@ -163,7 +163,7 @@ export const deletePlant = async (req, res) => {
   }
 };
 
-//post plant for sale
+// Post plant for sale
 export const postPlant = async (req, res) => {
   const plantId = req.params.id;
   const userId = req.user._id;
@@ -189,6 +189,7 @@ export const postPlant = async (req, res) => {
       return res.status(404).send({ message: "Plant not found" });
     }
 
+    // Upload images to ImageKit
     for (const image of images) {
       try {
         const uploadResponse = await imagekit.upload({
@@ -211,8 +212,13 @@ export const postPlant = async (req, res) => {
       images: uploadedImages,
     };
 
-    user.gardenerProfile.marketplaceListings.push(postPlant);
-    await user.save();
+    await User.updateOne(
+      { _id: userId },
+      {
+        $pull: { "gardenerProfile.garden.plants": { _id: plantId } },
+        $push: { "gardenerProfile.marketplaceListings": postPlant },
+      }
+    );
 
     res.status(201).send({ message: "Plant successfully posted", postPlant });
   } catch (error) {
