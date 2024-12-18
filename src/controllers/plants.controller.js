@@ -193,6 +193,19 @@ export const postPlant = async (req, res) => {
     if (!plant) {
       return res.status(404).send({ message: "Plant not found" });
     }
+
+    const postPlant = {
+      plantName : plantName || plant.scientificName,
+      harvestDate : harvestDate || Date.now(),
+      price,
+      description,
+      quantity,
+      images: uploadedImages
+    } 
+
+    user.gardenerProfile.marketplaceListings.push(postPlant);
+    
+    res.status(201).send({message: "Plant successfully posted",postPlant})
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server error" });
