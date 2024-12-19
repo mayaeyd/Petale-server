@@ -32,7 +32,14 @@ export const getOrders = async (req, res) => {
 
 export const createOrder = async (req, res) => {
   const userId = req.user._id;
-  const {listingId, buyerAddress, quantity} = req.body;
+  const { listingId, buyerAddress, quantity } = req.body;
+
+  if(!userId){
+    return res.status(400).send({message:"User ID is required"});
+  }
+  if(!listingId || !buyerAddress || !quantity){
+    return res.status(400).send({message:"All fields are required"});
+  }
 
 };
 
