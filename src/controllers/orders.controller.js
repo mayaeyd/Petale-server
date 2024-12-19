@@ -34,13 +34,16 @@ export const createOrder = async (req, res) => {
   const userId = req.user._id;
   const { listingId, buyerAddress, quantity } = req.body;
 
-  if(!userId){
-    return res.status(400).send({message:"User ID is required"});
+  if (!userId) {
+    return res.status(400).send({ message: "User ID is required" });
   }
-  if(!listingId || !buyerAddress || !quantity){
-    return res.status(400).send({message:"All fields are required"});
+  if (!listingId || !buyerAddress || !quantity) {
+    return res.status(400).send({ message: "All fields are required" });
   }
 
+  const gardener = await User.findOne({
+    "gardenerProfile.marketplaceListings._id": listingId,
+  });
 };
 
 export const cancelOrder = async (req, res) => {};
