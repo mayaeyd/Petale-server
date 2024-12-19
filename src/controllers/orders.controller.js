@@ -79,6 +79,11 @@ export const createOrder = async (req, res) => {
       { _id: userId },
       { $push: { purchaseHistory: order } }
     );
+
+    res.status(201).send({
+      message: "Order placed successfully",
+      order,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server Error" });
