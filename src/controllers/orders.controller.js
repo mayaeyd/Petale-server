@@ -51,6 +51,14 @@ export const createOrder = async (req, res) => {
         .status(404)
         .send({ message: "Plant not found in marketplace" });
     }
+
+    const listing = gardener.gardenerProfile.marketplaceListings.find(
+      (item) => item._id.toString() === listingId
+    );
+
+    if (!listing) {
+      return res.status(404).send({ message: "Listing not found" });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server Error" });
