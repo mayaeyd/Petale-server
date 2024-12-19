@@ -1,13 +1,17 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  /* options */
-});
+export const initializeSocket = (httpServer) => {
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
 
-io.on("connection", (socket) => {
-  // ...
-});
+  io.on("connection", (socket) => {
+    // ...
+  });
 
-httpServer.listen(3000);
+  httpServer.listen(3000);
+};
