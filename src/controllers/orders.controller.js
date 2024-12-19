@@ -65,6 +65,7 @@ export const createOrder = async (req, res) => {
     }
 
     listing.quantity -= quantity;
+    await gardener.save();
 
     const order = {
       listingId,
