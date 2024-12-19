@@ -41,9 +41,20 @@ export const createOrder = async (req, res) => {
     return res.status(400).send({ message: "All fields are required" });
   }
 
-  const gardener = await User.findOne({
-    "gardenerProfile.marketplaceListings._id": listingId,
-  });
+  try {
+    const gardener = await User.findOne({
+      "gardenerProfile.marketplaceListings._id": listingId,
+    });
+
+    if (!gardener) {
+      return res
+        .status(404)
+        .send({ message: "Plant not found in marketplace" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ message: "Server Error" });
+  }
 };
 
 export const cancelOrder = async (req, res) => {};
