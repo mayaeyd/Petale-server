@@ -5,6 +5,7 @@ import connectToDB from "./db/connection.js";
 import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/users.routes.js";
 import plantsRoutes from "./routes/plants.routes.js";
+import ordersRoutes from "./routes/orders.routes.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/plants", plantsRoutes);
+app.use("/orders", ordersRoutes);
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server running on port ${process.env.SERVER_PORT}`);
