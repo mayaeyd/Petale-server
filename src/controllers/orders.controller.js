@@ -30,7 +30,11 @@ export const getOrders = async (req, res) => {
   }
 };
 
-export const createOrder = async (req, res) => {};
+export const createOrder = async (req, res) => {
+  const userId = req.user._id;
+  const {listingId, buyerAddress, quantity} = req.body;
+
+};
 
 export const cancelOrder = async (req, res) => {};
 

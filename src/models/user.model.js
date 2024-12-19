@@ -133,7 +133,10 @@ const userSchema = new mongoose.Schema(
 
     purchaseHistory: [
       {
-        listingId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        listingId: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+        },
         purchaseDate: {
           type: Date,
           default: Date.now,
