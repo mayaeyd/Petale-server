@@ -65,6 +65,15 @@ export const createOrder = async (req, res) => {
     }
 
     listing.quantity -= quantity;
+
+    const order = {
+      listingId,
+      purchaseDate: new Date(),
+      quantity,
+      totalPrice: listing.price * quantity,
+      sellerGardenerId: gardener._id,
+      buyerAddress,
+    };
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server Error" });
