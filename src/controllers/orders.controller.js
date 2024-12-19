@@ -74,6 +74,11 @@ export const createOrder = async (req, res) => {
       sellerGardenerId: gardener._id,
       buyerAddress,
     };
+
+    const user = await User.updateOne(
+      { _id: userId },
+      { $push: { purchaseHistory: order } }
+    );
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "Server Error" });
