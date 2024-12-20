@@ -1,8 +1,10 @@
-import { createServer } from "http";
 import { Server } from "socket.io";
+import http from "http";
 
-export const initializeSocket = (httpServer) => {
-  const io = new Server(httpServer, {
+export const setupSocketIO = (app) => {
+  const server = http.createServer(app);
+  
+  const io = new Server(server, {
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
@@ -10,8 +12,17 @@ export const initializeSocket = (httpServer) => {
   });
 
   io.on("connection", (socket) => {
-    // ...
+    console.log("A user connected");
+
+    socket.on("sensorData", (data) => {
+      console.log("Received sensor data:", data);
+      io.emit("sensorUpdate", data);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("A user disconnected");
+    });
   });
 
-  httpServer.listen(3000);
+  return server; 
 };
