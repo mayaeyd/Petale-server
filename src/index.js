@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/users.routes.js";
 import plantsRoutes from "./routes/plants.routes.js";
 import ordersRoutes from "./routes/orders.routes.js";
+import { setupSocketIO } from "./utils/socket.io.js";
 
 dotenv.config();
 
@@ -23,7 +24,9 @@ app.use("/users", usersRoutes);
 app.use("/plants", plantsRoutes);
 app.use("/orders", ordersRoutes);
 
-app.listen(process.env.SERVER_PORT, () => {
+const server = setupSocketIO(app);
+
+server.listen(process.env.SERVER_PORT, () => {
   console.log(`Server running on port ${process.env.SERVER_PORT}`);
   connectToDB();
 });
