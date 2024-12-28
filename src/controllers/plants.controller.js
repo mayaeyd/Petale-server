@@ -17,7 +17,7 @@ export const getPlants = async (req, res) => {
 
     if (plantId) {
       const plant = user.gardenerProfile.garden.plants.find(
-        (plant) => plant._id === plantId
+        (plant) => plant._id.toString() === plantId
       );
       return res.status(200).send({ success: true, plant });
     }

@@ -222,7 +222,7 @@ export const adminLogin = async (req, res) => {
 
 export const getSelf = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1];    
 
     if (!token) {
       return res.status(401).send({ message: "Token is required" });

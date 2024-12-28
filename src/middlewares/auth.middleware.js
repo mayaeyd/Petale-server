@@ -13,7 +13,7 @@ export const authMiddleware = async (req, res, next) => {
   const splitted = authHeader.split(" ");
 
   if (splitted.length !== 2 || splitted[0] !== "Bearer") {
-    return res.status(401).send({
+    return res.status(400).send({
       message: "Unauthorized",
     });
   }
