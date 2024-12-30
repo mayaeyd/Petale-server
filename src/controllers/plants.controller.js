@@ -177,15 +177,15 @@ export const postPlant = async (req, res) => {
     const { plantName, harvestDate, price, description, quantity } = req.body;
     const images = req.files; // Image files from Multer
 
-    if (!price || !description || !quantity || !images || images.length === 0) {
+    if (
+      !price ||
+      !description ||
+      !quantity ||
+      !images ||
+      images.length === 0 ||
+      images.length > 3
+    ) {
       return res.status(400).send({ message: "All fields are required" });
-    }
-
-    const plant = user.gardenerProfile.garden.plants.find(
-      (plant) => plant._id.toString() === plantId
-    );
-    if (!plant) {
-      return res.status(404).send({ message: "Plant not found" });
     }
 
     // Upload images to ImageKit
@@ -200,6 +200,41 @@ export const postPlant = async (req, res) => {
         console.error("Image upload failed:", error);
         return res.status(500).send({ message: "Image upload failed" });
       }
+    }
+
+    if (!plantId) {
+      try {
+        const newPlant = {
+          _id: new mongoose.Types.ObjectId(),
+          plantName,
+          harvestDate: harvestDate || Date.now(),
+          price,
+          description,
+          quantity,
+          images: uploadedImages,
+        };
+
+        await User.updateOne(
+          { _id: userId },
+          {
+            $push: { "gardenerProfile.garden.plants": newPlant },
+          }
+        );
+
+        res
+          .status(201)
+          .send({ message: "New plant successfully added", newPlant });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).send({ message: "Server error" });
+      }
+    }
+
+    const plant = user.gardenerProfile.garden.plants.find(
+      (plant) => plant._id.toString() === plantId
+    );
+    if (!plant) {
+      return res.status(404).send({ message: "Plant not found" });
     }
 
     const postPlant = {
