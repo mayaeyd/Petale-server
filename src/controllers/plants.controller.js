@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import imagekit from "../utils/imagekit.js";
 
@@ -174,13 +175,14 @@ export const postPlant = async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    const { plantName, harvestDate, price, description, quantity } = req.body;
+    const { plantName, harvestDate, price, description, quantity, plantType } = req.body;
     const images = req.files; // Image files from Multer
 
     if (
       !price ||
       !description ||
       !quantity ||
+      !plantType ||
       !images ||
       images.length === 0 ||
       images.length > 3
@@ -207,6 +209,7 @@ export const postPlant = async (req, res) => {
         const newPlant = {
           _id: new mongoose.Types.ObjectId(),
           plantName,
+          plantType,
           harvestDate: harvestDate || Date.now(),
           price,
           description,
@@ -217,7 +220,7 @@ export const postPlant = async (req, res) => {
         await User.updateOne(
           { _id: userId },
           {
-            $push: { "gardenerProfile.garden.plants": newPlant },
+            $push: { "gardenerProfile.marketplaceListings": newPlant },
           }
         );
 

@@ -101,6 +101,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
           },
+          plantType: {
+            type: String,
+            enum: ["plant", "flower"],
+            required: true,
+          },
           harvestDate: {
             type: Date,
             required: true,
