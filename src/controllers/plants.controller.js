@@ -63,9 +63,13 @@ export const getPostedPlants = async (req, res) => {
       return res.status(200).send({ success: true, plant });
     }
 
+    const availablePlants = user.gardenerProfile.marketplaceListings.filter(
+      (plant) => plant.status === "available"
+    );
+
     return res.status(200).send({
       success: true,
-      plants: user.gardenerProfile.marketplaceListings,
+      plants: availablePlants,
     });
   } catch (error) {
     console.log(error.message);
