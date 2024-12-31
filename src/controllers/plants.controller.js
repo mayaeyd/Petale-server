@@ -53,12 +53,10 @@ export const getPostedPlants = async (req, res) => {
       return res.status(200).send({ success: true, plant });
     }
 
-    return res
-      .status(200)
-      .send({
-        success: true,
-        plants: user.gardenerProfile.marketplaceListings,
-      });
+    return res.status(200).send({
+      success: true,
+      plants: user.gardenerProfile.marketplaceListings,
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: "Server error" });
@@ -79,7 +77,22 @@ export const getSoldPlants = async (req, res) => {
       return res.status(404).send({ message: "User not found" });
     }
 
-    
+    if (plantId) {
+      const plant = user.gardenerProfile.marketplaceListings.find(
+        (plant) => plant._id.toString() === plantId
+      );
+      return res.status(200).send({ success: true, plant });
+    }
+
+    const soldPlants = user.gardenerProfile.marketplaceListings.filter(
+      (plant) => plant.status === "sold"
+    );
+
+    return res.status(200).send({
+      success: true,
+      plants: soldPlants,
+    });
+
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: "Server error" });
