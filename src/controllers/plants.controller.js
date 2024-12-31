@@ -50,6 +50,16 @@ export const getPostedPlants = async (req, res) => {
       const plant = user.gardenerProfile.marketplaceListings.find(
         (plant) => plant._id.toString() === plantId
       );
+      if (!plant) {
+        return res
+          .status(404)
+          .send({ success: false, message: "Plant not found" });
+      }
+      if (plant.status !== "available") {
+        return res
+          .status(403)
+          .send({ success: false, message: "Plant is not available" });
+      }
       return res.status(200).send({ success: true, plant });
     }
 
@@ -81,7 +91,7 @@ export const getSoldPlants = async (req, res) => {
       const plant = user.gardenerProfile.marketplaceListings.find(
         (plant) => plant._id.toString() === plantId
       );
-      
+
       if (!plant) {
         return res
           .status(404)
