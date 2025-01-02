@@ -14,14 +14,14 @@ import upload from "../utils/multerConfig.js";
 
 const router = new Router();
 
+
+router.get("/post/:id?", authMiddleware, gardenerMiddleware, getPostedPlants);
+router.post("/post/:id?", authMiddleware, gardenerMiddleware, upload, postPlant);
+router.get("/sold/:id?", authMiddleware, gardenerMiddleware, getSoldPlants);
+
 router.get("/:id?", authMiddleware, gardenerMiddleware, getPlants);
 router.post("/", authMiddleware, gardenerMiddleware, addPlant);
 router.put("/:id", authMiddleware, gardenerMiddleware, editPlant);
 router.delete("/:id", authMiddleware, gardenerMiddleware, deletePlant);
-
-router.get("/post/:id?", authMiddleware, gardenerMiddleware, getPostedPlants);
-router.post("/post/:id?", authMiddleware, gardenerMiddleware, upload, postPlant);
-
-router.get("/sold/:id?", authMiddleware, gardenerMiddleware, getSoldPlants);
 
 export default router;
