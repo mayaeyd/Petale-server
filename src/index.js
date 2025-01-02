@@ -6,11 +6,13 @@ import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/users.routes.js";
 import plantsRoutes from "./routes/plants.routes.js";
 import ordersRoutes from "./routes/orders.routes.js";
-import { setupSocketIO } from "./utils/socket.io.js";
+import setupWebSocket from "./utils/socket.io.js";
+import { createServer } from "http";
 
 dotenv.config();
 
 const app = express();
+const server = createServer(app);
 
 app.use(express.json());
 app.use(
@@ -24,9 +26,12 @@ app.use("/users", usersRoutes);
 app.use("/plants", plantsRoutes);
 app.use("/orders", ordersRoutes);
 
-const server = setupSocketIO(app);
-
-server.listen(process.env.SERVER_PORT, () => {
-  console.log(`Server running on port ${process.env.SERVER_PORT}`);
-  connectToDB();
-});
+try {
+  await connectToDB();
+  setupWebSocket(server);
+  server.listen(process.env.SERVER_PORT, () => {
+    console.log(`Server running on port ${process.env.SERVER_PORT}`);
+  });
+} catch (error) {
+  console.error("Failed to connect to MongoDB:", error);
+}
