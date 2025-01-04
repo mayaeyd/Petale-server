@@ -32,6 +32,19 @@ const setupWebSocket = (server) => {
     });
   });
 
+  io.on("connection", (socket) => {
+    // socket.io event
+    socket.on("water_now", (duration) => {
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          // Sends a JSON-encoded message to the WebSocket client with
+          // the type water_now and the specified duration.
+          client.send(JSON.stringify({ type: "water_now", duration }));
+        }
+      });
+    });
+  });
+
   return { io, wss };
 };
 
