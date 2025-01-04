@@ -9,6 +9,16 @@ const setupWebSocket = (server) => {
   // Creates a WebSocket server
   const wss = new WebSocketServer({ noServer: true });
 
+  server.on("upgrade", (request, socket, head) => {
+    if (request.url === "/ws") {
+      // Upgrades the HTTP connection to a WebSocket connection
+      wss.handleUpgrade(request, socket, head, (ws) => {
+        // Emits a connection event to let the WebSocket server handle the new connection
+        wss.emit("connection", ws, request);
+      });
+    }
+  });
+
   return { io, wss };
 };
 
