@@ -380,6 +380,23 @@ export const harvestPlant = async (req, res) => {
         runValidators: true,
       }
     );
+
+    if (!updatedProfile) {
+      return res.status(404).json({
+        success: false,
+        message: "Plant not found or user not authorized",
+      });
+    }
+
+    const updatedPlant = updatedProfile.gardenerProfile.garden.plants.find(
+      (plant) => plant._id.toString() === plantId
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Plant harvested successfully",
+      plant: updatedPlant,
+    });
   } catch (error) {
     console.error("Error harvesting plant:", error);
     return res.status(500).json({
