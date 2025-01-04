@@ -362,4 +362,30 @@ export const postPlant = async (req, res) => {
 export const harvestPlant = async (req, res) => {
   const plantId = req.params.id;
   const userId = req.user._id;
+
+  try {
+    const updatedProfile = await User.findOneAndUpdate(
+      {
+        _id: userId,
+        "gardenerProfile.garden.plants._id": plantId,
+      },
+      {
+        $set: {
+          "gardenerProfile.garden.plants.$[plant].isHarvested": true,
+        },
+      },
+      {
+        arrayFilters: [{ "plant._id": plantId }],
+        new: true,
+        runValidators: true,
+      }
+    );
+  } catch (error) {
+    console.error("Error harvesting plant:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error harvesting plant",
+      error: error.message,
+    });
+  }
 };
