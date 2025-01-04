@@ -43,6 +43,16 @@ const setupWebSocket = (server) => {
         }
       });
     });
+    // socket.io event
+    socket.on("update_schedule", (schedule) => {
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          // Sends a JSON-encoded message to the WebSocket client with
+          // the type update_schedule and the schedule data spread (...schedule)
+          client.send(JSON.stringify({ type: "update_schedule", ...schedule }));
+        }
+      });
+    });
   });
 
   return { io, wss };
