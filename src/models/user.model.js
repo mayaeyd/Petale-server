@@ -92,6 +92,10 @@ const userSchema = new mongoose.Schema(
                 default: {},
               },
             },
+            isHarvested: {
+              type: Boolean,
+              default: false,
+            },
           },
         ],
       },
