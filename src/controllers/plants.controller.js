@@ -270,6 +270,8 @@ export const postPlant = async (req, res) => {
     req.body;
   const images = req.files; // Image files from Multer
 
+  console.log(req.body, images);
+
   if (
     !price ||
     !description ||
@@ -355,4 +357,9 @@ export const postPlant = async (req, res) => {
       return res.status(500).send({ message: "Server error" });
     }
   }
+};
+
+export const harvestPlant = async (req, res) => {
+  const plantId = req.params.id;
+  const userId = req.user._id;
 };
