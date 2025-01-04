@@ -19,6 +19,19 @@ const setupWebSocket = (server) => {
     }
   });
 
+  wss.on("connection", (ws) => {
+    // Listens for messages from the WebSocket client
+    ws.on("message", (message) => {
+      try {
+        const data = JSON.parse(message);
+        // Broadcasts the parsed data to all connected Socket.IO clients using the sensor_data event
+        io.emit("sensor_data", data);
+      } catch (error) {
+        console.error("Error parsing message:", error);
+      }
+    });
+  });
+
   return { io, wss };
 };
 
