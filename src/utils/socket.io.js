@@ -1,28 +1,15 @@
 import { Server } from "socket.io";
-import http from "http";
+import { WebSocketServer } from "ws";
 
-export const setupSocketIO = (app) => {
-  const server = http.createServer(app);
-  
+const setupWebSocket = (server) => {
+  // Initialize a socket.io server and attach it to the provided http server
   const io = new Server(server, {
-    cors: {
-      origin: "*",
-      methods: ["GET", "POST"],
-    },
+    cors: { origin: "*", methods: ["GET", "POST"] },
   });
+  // Creates a WebSocket server
+  const wss = new WebSocketServer({ noServer: true });
 
-  io.on("connection", (socket) => {
-    console.log("A user connected");
-
-    socket.on("sensorData", (data) => {
-      console.log("Received sensor data:", data);
-      io.emit("sensorUpdate", data);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("A user disconnected");
-    });
-  });
-
-  return server; 
+  return { io, wss };
 };
+
+export default setupWebSocket;
