@@ -338,6 +338,7 @@ export const postPlant = async (req, res) => {
         plantName: plantName || plant.scientificName,
         harvestDate: harvestDate || Date.now(),
         price,
+        plantType,
         description,
         quantity,
         images: uploadedImages,
