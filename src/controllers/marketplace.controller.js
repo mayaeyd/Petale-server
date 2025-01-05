@@ -10,18 +10,28 @@ export const getAllPosts = async (req, res) => {
           $not: { $size: 0 },
         },
       },
-      { gardenerProfile: 1 }
+      {
+        firstName: 1,
+        lastName: 1,
+        "gardenerProfile.garden.name": 1,
+        "gardenerProfile.garden.location": 1,
+        "gardenerProfile.marketplaceListings": 1,
+      }
     );
 
     if (!gardeners || gardeners.length === 0) {
       return res.status(404).send({ message: "No marketplace listings found" });
     }
 
-    const allListings = gardeners.flatMap(
-      (gardener) => gardener.gardenerProfile
-    );
+    const formattedListings = gardeners.map((gardener) => ({
+      gardenerId: gardener._id,
+      gardenerName: `${gardener.firstName} ${gardener.lastName}`,
+      gardenName: gardener.gardenerProfile.garden.name,
+      gardenLocation: gardener.gardenerProfile.garden.location,
+      listings: gardener.gardenerProfile.marketplaceListings,
+    }));
 
-    res.status(200).send(allListings);
+    res.status(200).send(formattedListings);
   } catch (error) {
     console.error("Error fetching marketplace listings:", error);
     res
