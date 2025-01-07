@@ -39,6 +39,19 @@ export const getOrders = async (req, res) => {
       { purchaseHistory: { $exists: true, $ne: [] } },
       "firstName lastName email purchaseHistory"
     ).populate("purchaseHistory.sellerGardenerId", "firstName lastName email");
+
+    const allOrders = users.map((user) => ({
+      buyerId: user._id,
+      buyerName: `${user.firstName} ${user.lastName}`,
+      buyerEmail: user.email,
+      orders: user.purchaseHistory,
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: allOrders.length,
+      data: allOrders,
+    });
   } catch (error) {
     res.status(500).send({
       success: false,
