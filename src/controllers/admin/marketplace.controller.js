@@ -11,7 +11,7 @@ export const getPosts = async (req, res) => {
     if (id) {
       const user = await User.findOne(
         { "gardenerProfile.marketplaceListings._id": id },
-        "firstName lastName email gardenerProfile.marketplaceListings.$"
+        "firstName lastName email gardenerProfile.garden.name gardenerProfile.garden.location gardenerProfile.marketplaceListings.$"
       );
 
       if (!user) {
@@ -20,6 +20,19 @@ export const getPosts = async (req, res) => {
           message: "Post not found",
         });
       }
+
+      const post = user.gardenerProfile.marketplaceListings[0];
+      return res.status(200).send({
+        success: true,
+        data: {
+          sellerId: user._id,
+          sellerName: `${user.firstName} ${user.lastName}`,
+          sellerEmail: user.email,
+          gardenName: user.gardenerProfile.garden.name,
+          gardenLocation: user.gardenerProfile.garden.location,
+          post,
+        },
+      });
     }
   } catch (error) {
     res.status(500).send({
