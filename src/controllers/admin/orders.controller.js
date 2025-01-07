@@ -15,6 +15,13 @@ export const getOrders = async (req, res) => {
         "purchaseHistory.sellerGardenerId",
         "firstName lastName email"
       );
+
+      if (!user) {
+        return res.status(404).send({
+          success: false,
+          message: "Order not found",
+        });
+      }
     }
   } catch (error) {
     res.status(500).send({
