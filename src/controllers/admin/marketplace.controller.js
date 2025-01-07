@@ -62,3 +62,14 @@ export const getPosts = async (req, res) => {
     });
   }
 };
+
+export const editPost = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error editing post",
+      error: error.message,
+    });
+  }
+};
