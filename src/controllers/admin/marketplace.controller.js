@@ -118,6 +118,13 @@ export const deletePost = async (req, res) => {
       },
       { new: true }
     );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
   } catch (error) {
     res.status(500).send({
       success: false,
