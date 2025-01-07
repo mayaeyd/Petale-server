@@ -39,6 +39,21 @@ export const getPosts = async (req, res) => {
       { "gardenerProfile.marketplaceListings": { $exists: true, $ne: [] } },
       "firstName lastName email gardenerProfile.garden.name gardenerProfile.garden.location gardenerProfile.marketplaceListings"
     );
+
+    const allListings = users.map((user) => ({
+      sellerId: user._id,
+      sellerName: `${user.firstName} ${user.lastName}`,
+      sellerEmail: user.email,
+      gardenName: user.gardenerProfile.garden.name,
+      gardenLocation: user.gardenerProfile.garden.location,
+      listings: user.gardenerProfile.marketplaceListings,
+    }));
+
+    res.status(200).send({
+      success: true,
+      count: allListings.length,
+      data: allListings,
+    });
   } catch (error) {
     res.status(500).send({
       success: false,
