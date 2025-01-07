@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "user", "gardener"],
       default: "user",
     },
+    isBanned: {
+      type: Boolean,
+      default: false,
+    },
     gardenerProfile: {
       garden: {
         name: {
