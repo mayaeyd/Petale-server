@@ -47,7 +47,7 @@ export const getOrders = async (req, res) => {
       orders: user.purchaseHistory,
     }));
 
-    res.status(200).json({
+    res.status(200).send({
       success: true,
       count: allOrders.length,
       data: allOrders,
@@ -56,6 +56,17 @@ export const getOrders = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error fetching orders",
+      error: error.message,
+    });
+  }
+};
+
+export const getAllSales = async (req, res) => {
+  try {
+  } catch {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching sales",
       error: error.message,
     });
   }
