@@ -34,6 +34,11 @@ export const getPosts = async (req, res) => {
         },
       });
     }
+
+    const users = await User.find(
+      { "gardenerProfile.marketplaceListings": { $exists: true, $ne: [] } },
+      "firstName lastName email gardenerProfile.garden.name gardenerProfile.garden.location gardenerProfile.marketplaceListings"
+    );
   } catch (error) {
     res.status(500).send({
       success: false,
