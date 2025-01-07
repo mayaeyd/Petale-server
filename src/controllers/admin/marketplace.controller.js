@@ -109,8 +109,8 @@ export const deletePost = async (req, res) => {
   const postId = req.params.id;
 
   try {
-    const user = await User.findOneAndDelete(
-      { "gardenerProfile.marketplaceLsitings._id": postId },
+    const user = await User.findOneAndUpdate(
+      { "gardenerProfile.marketplaceListings._id": postId },
       {
         $pull: {
           "gardenerProfile.marketplaceListings": { _id: postId },
@@ -120,11 +120,16 @@ export const deletePost = async (req, res) => {
     );
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(404).send({
         success: false,
         message: "Post not found",
       });
     }
+
+    res.status(200).send({
+      success: true,
+      message: "Post deleted successfully",
+    });
   } catch (error) {
     res.status(500).send({
       success: false,
