@@ -81,7 +81,7 @@ export const editPost = async (req, res) => {
     );
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(404).send({
         success: false,
         message: "Post not found",
       });
@@ -90,6 +90,12 @@ export const editPost = async (req, res) => {
     const updatedPost = user.gardenerProfile.marketplaceListings.find(
       (listing) => listing._id.toString() === postId
     );
+
+    res.status(200).send({
+      success: true,
+      message: "Post updated successfully",
+      data: updatedPost,
+    });
   } catch (error) {
     res.status(500).send({
       success: false,
