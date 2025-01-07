@@ -76,9 +76,24 @@ export const getAllSales = async (req, res) => {
       const totalRevenue = user.gardenerProfile.marketplaceListings
         .filter((listing) => (listing.status = "sold"))
         .reduce((acc, listing) => acc + listing.price * listing.quantity, 0);
+
+      return {
+        gardenerId: user._id,
+        gardenerName: `${user.firstName} ${user.lastName}`,
+        gardenerEmail: user.email,
+        totalSales,
+        totalRevenue,
+        listings: user.gardenerProfile.marketplaceListings,
+      };
+    });
+
+    res.status(200).send({
+      success: true,
+      count: salesData.length,
+      data: salesData,
     });
   } catch {
-    res.status(500).json({
+    res.status(500).send({
       success: false,
       message: "Error fetching sales",
       error: error.message,
