@@ -132,7 +132,7 @@ const userSchema = new mongoose.Schema(
           },
           images: {
             type: [String],
-            default: [],
+            required: true,
           },
           status: {
             type: String,
