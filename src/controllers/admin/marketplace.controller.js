@@ -64,7 +64,21 @@ export const getPosts = async (req, res) => {
 };
 
 export const editPost = async (req, res) => {
+  const postId = req.params.id;
+  const updates = req.body;
   try {
+    const user = await User.findOneAndUpdate(
+      { "gardenerProfile.marketplaceListings._id": postId },
+      {
+        $set: {
+          "gardenerProfile.marketplaceListings.$": {
+            ...updates,
+            _id: postId,
+          },
+        },
+      },
+      { new: true, runValidators: true }
+    );
   } catch (error) {
     res.status(500).send({
       success: false,
