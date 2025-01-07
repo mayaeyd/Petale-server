@@ -1,7 +1,3 @@
-//getAllPosts
-//editPost
-//deletePost
-
 import User from "../../models/user.model.js";
 
 export const getPosts = async (req, res) => {
