@@ -79,6 +79,17 @@ export const editPost = async (req, res) => {
       },
       { new: true, runValidators: true }
     );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    const updatedPost = user.gardenerProfile.marketplaceListings.find(
+      (listing) => listing._id.toString() === postId
+    );
   } catch (error) {
     res.status(500).send({
       success: false,
