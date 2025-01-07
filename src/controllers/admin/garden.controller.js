@@ -1,5 +1,3 @@
-//getAllGrowingPlants
-
 import User from "../../models/user.model.js";
 
 export const getAllGrowingPlants = async (req, res) => {
@@ -17,6 +15,12 @@ export const getAllGrowingPlants = async (req, res) => {
       location: user.gardenerProfile.garden.location,
       plants: user.gardenerProfile.garden.plants,
     }));
+
+    res.status(200).send({
+      success: true,
+      count: allPlants.length,
+      data: allPlants,
+    });
   } catch (error) {
     res.status(500).send({
       success: false,
