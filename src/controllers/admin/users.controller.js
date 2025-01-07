@@ -24,7 +24,15 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const toggleUserBan = async (req, res) => {
+  const userId = req.user._id;
+  const { isBanned } = req.body;
+
   try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: { isBanned } },
+      { new: true, runValidators: true }
+    );
   } catch (error) {
     res.status(500).send({
       success: false,
