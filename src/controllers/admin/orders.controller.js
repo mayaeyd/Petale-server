@@ -72,6 +72,10 @@ export const getAllSales = async (req, res) => {
       const totalSales = user.gardenerProfile.marketplaceListings.filter(
         (listing) => listing.status === "sold"
       ).length;
+
+      const totalRevenue = user.gardenerProfile.marketplaceListings
+        .filter((listing) => (listing.status = "sold"))
+        .reduce((acc, listing) => acc + listing.price * listing.quantity, 0);
     });
   } catch {
     res.status(500).json({
