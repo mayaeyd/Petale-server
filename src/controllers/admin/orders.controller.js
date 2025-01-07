@@ -1,6 +1,3 @@
-//getAllOrders
-//getAllSales
-
 import User from "../../models/user.model.js";
 
 export const getOrders = async (req, res) => {
