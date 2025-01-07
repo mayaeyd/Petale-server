@@ -67,6 +67,12 @@ export const getAllSales = async (req, res) => {
       { role: "gardener" },
       "firstName lastName email gardenerProfile.marketplaceListings"
     );
+
+    const salesData = users.map((user) => {
+      const totalSales = user.gardenerProfile.marketplaceListings.filter(
+        (listing) => listing.status === "sold"
+      ).length;
+    });
   } catch {
     res.status(500).json({
       success: false,
