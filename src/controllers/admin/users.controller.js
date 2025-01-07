@@ -24,7 +24,7 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const toggleUserBan = async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.params.id;
   const { isBanned } = req.body;
 
   try {
@@ -33,6 +33,19 @@ export const toggleUserBan = async (req, res) => {
       { $set: { isBanned } },
       { new: true, runValidators: true }
     );
+
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      message: `User ${isBanned ? "banned" : "unbanned"} successfully`,
+      user,
+    });
   } catch (error) {
     res.status(500).send({
       success: false,
