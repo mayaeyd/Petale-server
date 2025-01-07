@@ -22,6 +22,17 @@ export const getOrders = async (req, res) => {
           message: "Order not found",
         });
       }
+
+      const order = user.purchaseHistory[0];
+      return res.status(200).send({
+        success: true,
+        data: {
+          buyerId: user._id,
+          buyerName: `${user.firstName} ${user.lastName}`,
+          buyerEmail: user.email,
+          order,
+        },
+      });
     }
   } catch (error) {
     res.status(500).send({
