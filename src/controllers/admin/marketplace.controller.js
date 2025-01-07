@@ -109,6 +109,15 @@ export const deletePost = async (req, res) => {
   const postId = req.params.id;
 
   try {
+    const user = await User.findOneAndDelete(
+      { "gardenerProfile.marketplaceLsitings._id": postId },
+      {
+        $pull: {
+          "gardenerProfile.marketplaceListings": { _id: postId },
+        },
+      },
+      { new: true }
+    );
   } catch (error) {
     res.status(500).send({
       success: false,
