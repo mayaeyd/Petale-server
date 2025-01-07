@@ -104,3 +104,16 @@ export const editPost = async (req, res) => {
     });
   }
 };
+
+export const deletePost = async (req, res) => {
+  const postId = req.params.id;
+
+  try {
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error deleting post",
+      error: error.message,
+    });
+  }
+};
