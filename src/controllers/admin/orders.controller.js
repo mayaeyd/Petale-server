@@ -63,6 +63,10 @@ export const getOrders = async (req, res) => {
 
 export const getAllSales = async (req, res) => {
   try {
+    const users = await User.find(
+      { role: "gardener" },
+      "firstName lastName email gardenerProfile.marketplaceListings"
+    );
   } catch {
     res.status(500).json({
       success: false,
