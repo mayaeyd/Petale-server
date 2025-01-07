@@ -1,0 +1,3 @@
+//getAllPosts
+//editPost
+//deletePost
