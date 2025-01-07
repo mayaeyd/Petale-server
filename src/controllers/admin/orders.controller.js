@@ -34,6 +34,11 @@ export const getOrders = async (req, res) => {
         },
       });
     }
+
+    const users = await User.find(
+      { purchaseHistory: { $exists: true, $ne: [] } },
+      "firstName lastName email purchaseHistory"
+    ).populate("purchaseHistory.sellerGardenerId", "firstName lastName email");
   } catch (error) {
     res.status(500).send({
       success: false,
