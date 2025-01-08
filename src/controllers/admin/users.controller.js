@@ -1,7 +1,26 @@
 import User from "../../models/user.model.js";
 
-export const getAllUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
+    const { id } = req.params;
+
+    if (id) {
+      const user = await User.findById(id, "-password").select(
+        "-gardenerProfile.garden.plants.sensorData"
+      );
+
+      if (!user) {
+        return res.status(404).send({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).send({
+        success: true,
+        data: user,
+      });
+    }
     const users = await User.find({}, "-password")
       .select("-gardenerProfile.garden.plants")
       .select("-gardenerProfile.marketplaceListings");
