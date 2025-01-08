@@ -13,21 +13,28 @@ import {
   getAllSales,
 } from "../controllers/admin/orders.controller.js";
 import { getAllGrowingPlants } from "../controllers/admin/garden.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { adminMiddleware } from "../middlewares/admin.middleware.js";
 
 const router = Router();
 
 // User routes
-router.get("/users/:id?", getUsers);
-router.patch("/users/:id/ban", toggleUserBan);
+router.get("/users/:id?", authMiddleware, adminMiddleware, getUsers);
+router.patch("/users/:id/ban", authMiddleware, adminMiddleware, toggleUserBan);
 
 // Marketplace routes
-router.get("/posts/:id?", getPosts);
-router.put("/posts/:id", editPost);
-router.delete("/posts/:id", deletePost);
+router.get("/posts/:id?", authMiddleware, adminMiddleware, getPosts);
+router.put("/posts/:id", authMiddleware, adminMiddleware, editPost);
+router.delete("/posts/:id", authMiddleware, adminMiddleware, deletePost);
 
 // Order routes
-router.get("/orders/:id?", getOrders);
-router.get("/sales", getAllSales);
+router.get("/orders/:id?", authMiddleware, adminMiddleware, getOrders);
+router.get("/sales", authMiddleware, adminMiddleware, getAllSales);
 
 // Garden routes
-router.get("/plants/:id?", getAllGrowingPlants);
+router.get(
+  "/plants/:id?",
+  authMiddleware,
+  adminMiddleware,
+  getAllGrowingPlants
+);
