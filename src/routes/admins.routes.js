@@ -38,3 +38,5 @@ router.get(
   adminMiddleware,
   getAllGrowingPlants
 );
+
+export default router;

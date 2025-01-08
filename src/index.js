@@ -7,6 +7,7 @@ import usersRoutes from "./routes/users.routes.js";
 import plantsRoutes from "./routes/plants.routes.js";
 import ordersRoutes from "./routes/orders.routes.js";
 import marketplaceRoutes from "./routes/marketplace.routes.js";
+import adminsRoutes from "./routes/admins.routes.js";
 import setupWebSocket from "./utils/socket.io.js";
 import { createServer } from "http";
 
@@ -27,6 +28,7 @@ app.use("/users", usersRoutes);
 app.use("/plants", plantsRoutes);
 app.use("/orders", ordersRoutes);
 app.use("/marketplace", marketplaceRoutes);
+app.use("/admin", adminsRoutes);
 
 try {
   await connectToDB();
