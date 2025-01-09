@@ -139,6 +139,10 @@ const userSchema = new mongoose.Schema(
             enum: ["available", "sold"],
             default: "available",
           },
+          listingDate: {
+            type: Date,
+            default: Date.now,
+          },
         },
       ],
       default: {},
