@@ -23,7 +23,8 @@ export const getUsers = async (req, res) => {
     }
     const users = await User.find({}, "-password")
       .select("-gardenerProfile.garden.plants")
-      .select("-gardenerProfile.marketplaceListings");
+      .select("-gardenerProfile.marketplaceListings")
+      .sort({ createdAt: -1 });
 
     res.status(200).send({
       success: true,

@@ -45,9 +45,13 @@ export const getPosts = async (req, res) => {
       listings: user.gardenerProfile.marketplaceListings,
     }));
 
+    const totalListings = users.reduce(
+      (total, user) => total + user.gardenerProfile.marketplaceListings.length,
+      0
+    );
     res.status(200).send({
       success: true,
-      count: allListings.length,
+      count: totalListings,
       data: allListings,
     });
   } catch (error) {

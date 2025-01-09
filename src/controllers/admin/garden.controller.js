@@ -16,9 +16,14 @@ export const getAllGrowingPlants = async (req, res) => {
       plants: user.gardenerProfile.garden.plants,
     }));
 
+    const totalPlants = users.reduce(
+      (total, user) => total + user.gardenerProfile.garden.plants.length,
+      0
+    );
+
     res.status(200).send({
       success: true,
-      count: allPlants.length,
+      count: totalPlants,
       data: allPlants,
     });
   } catch (error) {

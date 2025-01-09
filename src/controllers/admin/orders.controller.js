@@ -44,9 +44,14 @@ export const getOrders = async (req, res) => {
       orders: user.purchaseHistory,
     }));
 
+    const totalOrders = users.reduce(
+      (total, user) => total + user.purchaseHistory.length,
+      0
+    );
+
     res.status(200).send({
       success: true,
-      count: allOrders.length,
+      count: totalOrders,
       data: allOrders,
     });
   } catch (error) {
