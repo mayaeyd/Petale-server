@@ -64,6 +64,7 @@ export const getOrders = async (req, res) => {
 };
 
 export const getAllSales = async (req, res) => {
+  let totalSales = 0;
   try {
     const users = await User.find(
       { role: "gardener" },
@@ -71,30 +72,37 @@ export const getAllSales = async (req, res) => {
     );
 
     const salesData = users.map((user) => {
-      const totalSales = user.gardenerProfile.marketplaceListings.filter(
+      totalSales += user.gardenerProfile.marketplaceListings.filter(
         (listing) => listing.status === "sold"
       ).length;
 
+      const totalGardenerSales =
+        user.gardenerProfile.marketplaceListings.filter(
+          (listing) => listing.status === "sold"
+        ).length;
+
       const totalRevenue = user.gardenerProfile.marketplaceListings
-        .filter((listing) => (listing.status = "sold"))
+        .filter((listing) => listing.status === "sold")
         .reduce((acc, listing) => acc + listing.price * listing.quantity, 0);
 
       return {
         gardenerId: user._id,
         gardenerName: `${user.firstName} ${user.lastName}`,
         gardenerEmail: user.email,
-        totalSales,
+        totalGardenerSales,
         totalRevenue,
-        listings: user.gardenerProfile.marketplaceListings,
+        listings: user.gardenerProfile.marketplaceListings.filter(
+          (listing) => listing.status === "sold"
+        ),
       };
     });
 
     res.status(200).send({
       success: true,
-      count: salesData.length,
+      count: totalSales,
       data: salesData,
     });
-  } catch {
+  } catch (error) {
     res.status(500).send({
       success: false,
       message: "Error fetching sales",
