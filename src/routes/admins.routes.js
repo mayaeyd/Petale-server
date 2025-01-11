@@ -20,7 +20,7 @@ const router = Router();
 
 // User routes
 router.get("/users/:id?", authMiddleware, adminMiddleware, getUsers);
-router.patch("/users/:id/ban", authMiddleware, adminMiddleware, toggleUserBan);
+router.patch("/users/:id", authMiddleware, adminMiddleware, toggleUserBan);
 
 // Marketplace routes
 router.get("/posts/:id?", authMiddleware, adminMiddleware, getPosts);

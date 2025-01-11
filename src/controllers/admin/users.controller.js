@@ -5,9 +5,7 @@ export const getUsers = async (req, res) => {
     const { id } = req.params;
 
     if (id) {
-      const user = await User.findById(id, "-password").select(
-        "-gardenerProfile.garden.plants.sensorData"
-      );
+      const user = await User.findById(id, "-password");
 
       if (!user) {
         return res.status(404).send({
