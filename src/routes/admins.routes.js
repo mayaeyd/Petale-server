@@ -9,7 +9,7 @@ import {
   deletePost,
 } from "../controllers/admin/marketplace.controller.js";
 import {
-  getOrders,
+  getAllGardenersOrders,
   getAllSales,
 } from "../controllers/admin/orders.controller.js";
 import { getAllGrowingPlants } from "../controllers/admin/garden.controller.js";
@@ -28,7 +28,12 @@ router.put("/posts/:id", authMiddleware, adminMiddleware, editPost);
 router.delete("/posts/:id", authMiddleware, adminMiddleware, deletePost);
 
 // Order routes
-router.get("/orders/:id?", authMiddleware, adminMiddleware, getOrders);
+router.get(
+  "/orders/:id?",
+  authMiddleware,
+  adminMiddleware,
+  getAllGardenersOrders
+);
 router.get("/sales", authMiddleware, adminMiddleware, getAllSales);
 
 // Garden routes

@@ -1,63 +1,51 @@
 import User from "../../models/user.model.js";
 
-export const getOrders = async (req, res) => {
+export const getAllGardenersOrders = async (req, res) => {
   try {
-    const { id } = req.params;
+    const gardeners = await User.find({
+      gardenerProfile: { $exists: true },
+      "gardenerProfile.orders": { $exists: true, $ne: [] },
+    });
 
-    if (id) {
-      const user = await User.findOne(
-        { "purchaseHistory._id": id },
-        "firstName lastName email purchaseHistory.$"
-      ).populate(
-        "purchaseHistory.sellerGardenerId",
-        "firstName lastName email"
-      );
+    const buyerPromises = gardeners.flatMap((gardener) =>
+      gardener.gardenerProfile.orders.map((order) =>
+        User.findById(order.buyerId).select("firstName lastName email")
+      )
+    );
+    const buyers = await Promise.all(buyerPromises);
 
-      if (!user) {
-        return res.status(404).send({
-          success: false,
-          message: "Order not found",
-        });
-      }
-
-      const order = user.purchaseHistory[0];
-      return res.status(200).send({
-        success: true,
-        data: {
-          buyerId: user._id,
-          buyerName: `${user.firstName} ${user.lastName}`,
-          buyerEmail: user.email,
-          order,
-        },
-      });
-    }
-
-    const users = await User.find(
-      { purchaseHistory: { $exists: true, $ne: [] } },
-      "firstName lastName email purchaseHistory"
-    ).populate("purchaseHistory.sellerGardenerId", "firstName lastName email");
-
-    const allOrders = users.map((user) => ({
-      buyerId: user._id,
-      buyerName: `${user.firstName} ${user.lastName}`,
-      buyerEmail: user.email,
-      orders: user.purchaseHistory,
-    }));
-
-    const totalOrders = users.reduce(
-      (total, user) => total + user.purchaseHistory.length,
-      0
+    const buyerMap = new Map(
+      buyers.map((buyer) => [buyer?._id.toString(), buyer])
     );
 
-    res.status(200).send({
+    const allOrders = gardeners.map((gardener) => ({
+      gardenerId: gardener._id,
+      gardenerName: gardener.firstName + " " + gardener.lastName,
+      gardenName: gardener.gardenerProfile.garden?.name,
+      orders: gardener.gardenerProfile.orders.map((order) => {
+        const buyer = buyerMap.get(order.buyerId.toString());
+        return {
+          ...order.toObject(),
+          gardenerName: gardener.firstName + " " + gardener.lastName,
+          gardenName: gardener.gardenerProfile.garden?.name,
+          buyerInfo: buyer
+            ? {
+                name: `${buyer.firstName} ${buyer.lastName}`,
+                email: buyer.email,
+              }
+            : null,
+        };
+      }),
+    }));
+
+    res.status(200).json({
       success: true,
-      count: totalOrders,
-      data: allOrders,
+      orders: allOrders,
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       success: false,
-      message: "Error fetching orders",
+      message: "Error fetching all gardeners' orders.",
       error: error.message,
     });
   }
