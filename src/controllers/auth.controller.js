@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
@@ -20,7 +20,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const check = await bcrypt.compare(password, user.password);
+    const check = await bcryptjs.compare(password, user.password);
 
     if (!check) {
       return res.status(400).send({
@@ -83,7 +83,7 @@ export const register = async (req, res) => {
     return res.status(400).json({ message: "Passwords do not match" });
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcryptjs.hash(password, 10);
 
   const userData = {
     firstName,
@@ -146,7 +146,7 @@ export const updateProfile = async (req, res) => {
     if (lastName) updateData.lastName = lastName;
     if (phoneNumber) updateData.phoneNumber = phoneNumber;
     if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcryptjs.hash(password, 10);
       updateData.hashedPassword = hashedPassword;
     }
 
@@ -201,7 +201,7 @@ export const adminLogin = async (req, res) => {
       });
     }
 
-    const check = await bcrypt.compare(password, user.password);
+    const check = await bcryptjs.compare(password, user.password);
 
     if (!check) {
       return res.status(400).send({
@@ -222,7 +222,7 @@ export const adminLogin = async (req, res) => {
 
 export const getSelf = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];    
+    const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       return res.status(401).send({ message: "Token is required" });
