@@ -145,6 +145,20 @@ const userSchema = new mongoose.Schema(
           },
         },
       ],
+      orders: [
+        {
+          buyerId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+          },
+          name: { type: String, required: true },
+          quantity: { type: Number, required: true },
+          totalPrice: { type: Number, required: true },
+          deliveryAddress: { type: String, required: true },
+          orderDate: { type: Date, default: Date.now },
+        },
+      ],
       default: {},
     },
 
@@ -174,6 +188,48 @@ const userSchema = new mongoose.Schema(
         buyerAddress: {
           type: String,
           required: true,
+        },
+      },
+    ],
+
+    orders: [
+      {
+        orderItems: [
+          {
+            id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            name: {
+              type: String,
+              required: true,
+            },
+            quantity: {
+              type: Number,
+              required: true,
+            },
+            price: {
+              type: Number,
+              required: true,
+            },
+          },
+        ],
+        totalAmount: {
+          type: Number,
+          required: true,
+        },
+        orderDate: {
+          type: Date,
+          default: Date.now,
+        },
+        deliveryAddress: {
+          type: String,
+          required: true,
+        },
+        status: {
+          type: String,
+          enum: ["pending", "processing", "completed", "cancelled"],
+          default: "pending",
         },
       },
     ],
