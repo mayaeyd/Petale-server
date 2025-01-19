@@ -1,17 +1,18 @@
 import { Router } from "express";
-import {
-  cancelOrder,
-  createOrder,
-  getOrders,
-  trackOrder,
-} from "../controllers/orders.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
+
+import {
+  createOrder,
+  getGardenerOrders,
+  getUserOrders,
+  updateOrderStatus,
+} from "../controllers/orders.controller.js";
 
 const router = new Router();
 
-router.get("/:id?", authMiddleware, getOrders);
 router.post("/", authMiddleware, createOrder);
-router.delete("/:id", authMiddleware, cancelOrder);
-router.get("/:id", authMiddleware, trackOrder);
+router.get("/user", authMiddleware, getUserOrders);
+router.get("/gardener/:gardenerId", authMiddleware, getGardenerOrders);
+router.patch("/user/:userId/order/:orderId", authMiddleware, updateOrderStatus);
 
 export default router;
