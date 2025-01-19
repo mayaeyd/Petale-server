@@ -19,10 +19,6 @@ export const getAllPosts = async (req, res) => {
       }
     );
 
-    if (!gardeners || gardeners.length === 0) {
-      return res.status(404).send({ message: "No marketplace listings found" });
-    }
-
     const formattedListings = gardeners.map((gardener) => ({
       gardenerId: gardener._id,
       gardenerName: `${gardener.firstName} ${gardener.lastName}`,

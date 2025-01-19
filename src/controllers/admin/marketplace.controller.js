@@ -3,9 +3,8 @@ import User from "../../models/user.model.js";
 export const getPosts = async (req, res) => {
   try {
     const { id } = req.params;
-    const { ids } = req.query; // Add this to handle array of IDs in query
+    const { ids } = req.query;
 
-    // Handle array of IDs
     if (ids) {
       const idsArray = ids.split(",");
       const users = await User.find(
@@ -13,7 +12,6 @@ export const getPosts = async (req, res) => {
         "firstName lastName email gardenerProfile.garden.name gardenerProfile.garden.location gardenerProfile.marketplaceListings"
       );
 
-      // Extract matching posts from each user
       const matchingPosts = users.reduce((posts, user) => {
         const userPosts = user.gardenerProfile.marketplaceListings
           .filter((listing) => idsArray.includes(listing._id.toString()))
@@ -63,7 +61,6 @@ export const getPosts = async (req, res) => {
       });
     }
 
-    // Handle get all posts (existing code)
     const users = await User.find(
       { "gardenerProfile.marketplaceListings": { $exists: true, $ne: [] } },
       "firstName lastName email gardenerProfile.garden.name gardenerProfile.garden.location gardenerProfile.marketplaceListings"
