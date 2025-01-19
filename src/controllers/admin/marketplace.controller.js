@@ -3,7 +3,39 @@ import User from "../../models/user.model.js";
 export const getPosts = async (req, res) => {
   try {
     const { id } = req.params;
+    const { ids } = req.query; // Add this to handle array of IDs in query
 
+    // Handle array of IDs
+    if (ids) {
+      const idsArray = ids.split(",");
+      const users = await User.find(
+        { "gardenerProfile.marketplaceListings._id": { $in: idsArray } },
+        "firstName lastName email gardenerProfile.garden.name gardenerProfile.garden.location gardenerProfile.marketplaceListings"
+      );
+
+      // Extract matching posts from each user
+      const matchingPosts = users.reduce((posts, user) => {
+        const userPosts = user.gardenerProfile.marketplaceListings
+          .filter((listing) => idsArray.includes(listing._id.toString()))
+          .map((post) => ({
+            sellerId: user._id,
+            sellerName: `${user.firstName} ${user.lastName}`,
+            sellerEmail: user.email,
+            gardenName: user.gardenerProfile.garden.name,
+            gardenLocation: user.gardenerProfile.garden.location,
+            post,
+          }));
+        return [...posts, ...userPosts];
+      }, []);
+
+      return res.status(200).send({
+        success: true,
+        count: matchingPosts.length,
+        data: matchingPosts,
+      });
+    }
+
+    // Handle single ID
     if (id) {
       const user = await User.findOne(
         { "gardenerProfile.marketplaceListings._id": id },
@@ -31,6 +63,7 @@ export const getPosts = async (req, res) => {
       });
     }
 
+    // Handle get all posts (existing code)
     const users = await User.find(
       { "gardenerProfile.marketplaceListings": { $exists: true, $ne: [] } },
       "firstName lastName email gardenerProfile.garden.name gardenerProfile.garden.location gardenerProfile.marketplaceListings"
@@ -49,6 +82,7 @@ export const getPosts = async (req, res) => {
       (total, user) => total + user.gardenerProfile.marketplaceListings.length,
       0
     );
+
     res.status(200).send({
       success: true,
       count: totalListings,
