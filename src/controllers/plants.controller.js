@@ -269,8 +269,6 @@ export const postPlant = async (req, res) => {
   const { plantName, harvestDate, price, description, quantity, plantType } =
     req.body;
   const images = req.files; // Image files from Multer
-  console.log(req.body, images);
-
   if (
     !price ||
     !description ||
